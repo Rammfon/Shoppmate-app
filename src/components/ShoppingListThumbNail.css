@@ -1,0 +1,47 @@
+/* Add this to your CSS file or style section */
+
+.shopping-list-overview {
+    display: flexbox;
+    flex-wrap: wrap; /* Allows items to wrap to the next line if the container is too narrow */
+    justify-content: space-between; /* Distributes items evenly with space between them */
+  }
+
+  .shopping-list-overview h1 {
+    margin-left: 20px;
+    margin-top: 30px;
+  }
+
+.shopping-list-thumbnail {
+    border: 1px solid #000000;
+  
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px;
+    width: 30%;
+    height: auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color:rgb(252, 229, 103);
+  }
+  
+  .shopping-list-thumbnail h2 {
+    font-size: 1.2em;
+    margin-bottom: 8px;
+  }
+  
+  .shopping-list-thumbnail p {
+    margin: 8px 0;
+  }
+  
+  .shopping-list-thumbnail button {
+    
+    color: black;
+    border: 5%;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  

@@ -1,34 +1,49 @@
 // ShoppingListOverview.js
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate,} from 'react-router-dom';
+import mockup from '../Data/Mockup';
+import ShoppingListThumbnail from './ShoppingListThumbNail';
+import CreateListModal from './CreateListModal';
 
 const ShoppingListOverview = () => {
-  // Assuming you have an array of shopping lists
-  const shoppingLists = [
-    { id: 1, name: 'Nákupní seznam 1', members: ["Vy", "Uživatel 1", "Uživatel 2", "Uživatel 3"], items: [
-        { id: 1, name: "Položka 1", status: "nevyřešená" },
-        { id: 2, name: "Položka 2", status: "nevyřešená" },
-       
-      ], },
-    { id: 2, name: 'Nákupní seznam 2', members: ["Vy", "Uživatel 4", "Uživatel 5", "Uživatel 6"], items: [
-        { id: 3, name: "Položka 1", status: "nevyřešená" },
-        { id: 4, name: "Položka 2", status: "nevyřešená" },
-       
-      ],},
-    // ... add more shopping lists
-  ];
+  const shoppingLists = mockup;
+  const [shoppingListy, setShoppingLists] = useState(shoppingLists);
 
-  return (
+  const handleCreateList = (newList) => {
+    // Zpracujte vytvoření nového seznamu a aktualizujte stav seznamů
+    setShoppingLists([...shoppingListy, newList]);
+  };
+    
+    
+   
+    const navigate = useNavigate();
+   
+
+ 
+    const [isModalOpen, setModalOpen] = useState(false);
+    
+  
+      const toggleModal = () => {
+        setModalOpen(!isModalOpen);
+        const detailClick = (shoppingListId) => {
+          navigate(`/shopping-lists/${shoppingListId}`);
+      };
+  
+  };
+  return (  
     <div className="shopping-list-overview">
-      <h1>Shopping Lists Overview</h1>
+      <h1>Všechny nákupní seznamy</h1>
+      <CreateListModal onCreateList={handleCreateList} toggleModal={toggleModal} isModalOpen={isModalOpen}/>
       <ul>
-        {shoppingLists.map((list) => (  
+        {shoppingListy.map((list) => (  
           <li key={list.id}>
-           <Link to={`/api/shopping-lists/${ shoppingLists.id}`}>{list.name}</Link>
+             <ShoppingListThumbnail list={list} />
           </li>
         ))}
       </ul>
+    
     </div>
   );
 };

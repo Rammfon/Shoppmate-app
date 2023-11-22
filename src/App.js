@@ -14,7 +14,7 @@ function App() {
         <div className="content">
         <Routes>
   <Route path="/" element={<ShoppingListOverview />} />
-  <Route path= "/api/shopping-lists/:id" element={<ShoppingListDetail />} />
+  <Route path= "/shopping-lists/:id" element={<ShoppingListDetail  />} />
 </Routes>
         </div>
         <Footer />

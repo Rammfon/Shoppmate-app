@@ -6,16 +6,16 @@ import AddMember from "./AddMember";
 import AddItem from "./AddItem";
 import RemoveItem from "./RemoveItem";
 import { useParams } from 'react-router-dom';
+import mockup from '../Data/Mockup';
 const ShoppingListDetail = () => {
+  
   const { id } = useParams();
 
   // State to store shopping list data
-  const [shoppingList, setShoppingList] = useState({
-    name: [],
-    members: [],
-    items: [],
-  });
 
+  const [shoppingList, setShoppingList] = useState (mockup.find(item => item.id === parseInt(id)));
+
+  
   const [viewMode, setViewMode] = useState("vlastník");
   const [isOwner, setIsOwner] = useState(true);
   const [editingName, setEditingName] = useState(false);
@@ -112,10 +112,10 @@ const ShoppingListDetail = () => {
       </div>
 
       {editingName ? (
-        <EditShoppingListName currentName={shoppingList.name} onSave={changeName} />
-      ) : (
+  <EditShoppingListName currentName={shoppingList?.name} onSave={changeName} />
+) : (
         <h1>
-          {shoppingList.name}
+          {shoppingList?.name}
           {isOwner && viewMode === "vlastník" && !editingName && (
             <button className="button" onClick={() => handleEditClick()}>Editovat</button>
           )}
@@ -129,7 +129,7 @@ const ShoppingListDetail = () => {
 
       <h2>Členové nákupního seznamu:</h2>
       <ul className="memberlist">
-        {shoppingList.members.map((member, index) => (
+        {shoppingList?.members.map((member, index) => (
           <li key={index} className="memberitem">
             {member}
            
@@ -159,7 +159,7 @@ const ShoppingListDetail = () => {
 
       <h2>Položky seznamu:</h2>
       <ul>
-        {shoppingList.items
+        {shoppingList?.items
           .filter((item) => {
             return (
               selectedStatus === "vše" ||

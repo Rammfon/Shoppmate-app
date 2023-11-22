@@ -8,14 +8,17 @@ button {
     transition: background-color 0.3s ease;
     height: auto;
    width: auto;
+   cursor: pointer;
 
-  }
+  }  
     
   button:hover {
     background-color: pink; 
   }
   
- 
+ .home {
+  flex-direction: column;
+ }
   
   .content {
     flex-grow: 1;
