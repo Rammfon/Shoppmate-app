@@ -1,34 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EditShoppingListName from "./EditShoppingListName";
 import LeaveShoppingList from "./LeaveShoppingList";
 import RemoveMember from "./RemoveMember";
 import AddMember from "./AddMember";
 import AddItem from "./AddItem";
 import RemoveItem from "./RemoveItem";
-const ShoppingListDetail  = () => {
-  const [viewMode, setViewMode] = useState("vlastník"); 
-  const [isOwner, setIsOwner] = useState(true); 
+import { useParams } from 'react-router-dom';
+const ShoppingListDetail = () => {
+  const { id } = useParams();
 
-  const shoppingListData = {
-    name: "Nákupní seznam 1",
-    members: ["Vy", "Uživatel 1", "Uživatel 2", "Uživatel 3"],
-    items: [
-      { id: 1, name: "Položka 1", status: "nevyřešená" },
-      { id: 2, name: "Položka 2", status: "nevyřešená" },
-     
-    ],
-  };
+  // State to store shopping list data
+  const [shoppingList, setShoppingList] = useState({
+    name: [],
+    members: [],
+    items: [],
+  });
 
-  const [shoppingList, setShoppingList] = useState(shoppingListData);
+  const [viewMode, setViewMode] = useState("vlastník");
+  const [isOwner, setIsOwner] = useState(true);
   const [editingName, setEditingName] = useState(false);
-
-
   const [addingItem, setAddingItem] = useState(false);
- 
-  const [resolvedItems, setResolvedItems] = useState([]); 
-
-  const [selectedStatus, setSelectedStatus] = useState("vše"); 
+  const [resolvedItems, setResolvedItems] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("vše");
   const [showFilters, setShowFilters] = useState(false);
+  const [addingMember, setAddingMember] = useState(false);
+
+  // Fetch data for the selected shopping list
+  useEffect(() => {
+    const fetchData = async () => {
+      // Replace this with your actual data fetching logic
+      try {
+        const response = await fetch(`/api/shopping-lists/${id}`);
+        if (!response.ok) {
+          throw new Error(`Server returned ${response.status} ${response.statusText}`);;
+        }
+        const data = await response.json();
+        setShoppingList(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+
+
+
 
   const changeName = (newName) => {
     setShoppingList({ ...shoppingList, name: newName });
@@ -55,7 +73,7 @@ const ShoppingListDetail  = () => {
     setShoppingList({ ...shoppingList, members: updatedMember });
   };
 
-  const [addingMember, setAddingMember] = useState(false);
+
 
   const handleAddMember = (newMemberName) => {
    
