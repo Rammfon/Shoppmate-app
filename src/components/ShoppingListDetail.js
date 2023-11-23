@@ -30,7 +30,7 @@ const ShoppingListDetail = () => {
     const fetchData = async () => {
       // Replace this with your actual data fetching logic
       try {
-        const response = await fetch(`/api/shopping-lists/${id}`);
+        const response = await fetch(`/shopping-lists/${id}`);
         if (!response.ok) {
           throw new Error(`Server returned ${response.status} ${response.statusText}`);;
         }
