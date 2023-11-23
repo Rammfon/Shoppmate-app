@@ -3,13 +3,21 @@
 import React, { useState } from "react";
 import "./CreateListModal.css";
 
-export default function CreateListModal({ onCreateList, toggleModal, isModalOpen }) {
+export default function CreateListModal({ onCreateList, toggleModal, isModalOpen, user }) {
   const [listName, setListName] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSaveList = () => {
+        // Ověření, zda uživatel zadal název seznamu
+        if (!listName.trim()) {
+          setErrorMessage('Nemáte vyplněný název seznamu.');
+          return;
+        }
+    
     // Vytvořte nový seznam
     const newList = {
       id: Date.now(),
+      author: user,
       name: listName,
       members: ["Vy"],
       items: [],
@@ -20,8 +28,15 @@ export default function CreateListModal({ onCreateList, toggleModal, isModalOpen
 
     // Zavřete modální okno
     toggleModal();
+    setListName('');
+    setErrorMessage('')
   };
 
+  const handleInputChange = (e) => {
+    // Při změně vstupu skryjte chybovou zprávu
+    setErrorMessage('');
+    setListName(e.target.value);
+  };
   return (
     <>
       <button onClick={toggleModal} className="btn-modal">
@@ -38,8 +53,9 @@ export default function CreateListModal({ onCreateList, toggleModal, isModalOpen
               id="listName"
               placeholder="Název seznamu"
               value={listName}
-              onChange={(e) => setListName(e.target.value)}
+              onChange={handleInputChange}
             />
+             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             <button className="close-modal" onClick={handleSaveList}>
               Uložit
             </button>
