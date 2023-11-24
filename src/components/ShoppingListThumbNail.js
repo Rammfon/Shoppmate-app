@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import "./ShoppingListThumbNail.css"
 import DeleteConfirmationModal from './DeleteConfirmationModal';
 
 const ShoppingListThumbnail = ( props ) => {
   const [isModalOpen, setModalOpen] = useState(false);
-
+ const [isArchived, setIsArchived] = useState (false);
   const handleDeleteClick = () => {
     setModalOpen(true);
   };
@@ -20,6 +20,15 @@ const ShoppingListThumbnail = ( props ) => {
     setModalOpen(false);
     
   };
+  useEffect(() => {
+    // Aktualizujte vnitřní stav isArchived při změně prop isArchived
+    setIsArchived(props.isArchived);
+  }, [props.isArchived]);
+
+  const handleArchiveClick = () => {
+    // Volání funkce na aktualizaci stavu seznamu v nadřazené komponentě
+    props.onArchiveList(props.list.id, !props.isArchived);
+  };
   return (
     <div className="shopping-list-thumbnail">
       <h2>{props.list.name}</h2>
@@ -29,7 +38,9 @@ const ShoppingListThumbnail = ( props ) => {
         <button>Zobrazit</button>
         </Link>
         { props.user === props.list.author ? (<button onClick={() => handleDeleteClick(props.list.id)}>Smazat</button>) : (null) }
-        { props.user === props.list.author ? (<button>Archivovat</button>) : (null) }
+        { props.user === props.list.author ? (<button onClick={handleArchiveClick}>
+        {isArchived ? 'Odarchivovat' : 'Archivovat'}
+      </button>) : (null) }
         <DeleteConfirmationModal
         isOpen={isModalOpen}
         onCancel={handleCancelDelete}

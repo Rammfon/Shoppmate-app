@@ -11,7 +11,8 @@ const ShoppingListOverview = () => {
   
   const shoppingLists = mockup
   const [shoppingListy, setShoppingLists] = useState(shoppingLists);
-
+  const [showArchived, setShowArchived] = useState(false);
+  const [archivedLists, setArchivedLists] = useState([]); // Nový stav pro ukládání archivovaných seznamů
   const handleCreateList = (newList) => {
     // Zpracujte vytvoření nového seznamu a aktualizujte stav seznamů
     setShoppingLists([...shoppingListy, newList]);
@@ -43,12 +44,33 @@ const ShoppingListOverview = () => {
     const updatedLists = shoppingListy.filter((list) => list.id !== listId);
     // Update the state with the new list of shopping lists
     setShoppingLists(updatedLists);
+    setArchivedLists(archivedLists.filter((list) => list.id !== listId)); // Odstranit ze seznamu archivovaných seznamů
+  };
+  const handleArchiveList = (listId, isArchived) => {
+    const updatedLists = shoppingListy.map((list) =>
+      list.id === listId ? { ...list, isArchived } : list
+    );
+    setShoppingLists(updatedLists);
+
+    // Aktualizovat seznam archivovaných seznamů
+    if (isArchived) {
+      setArchivedLists([...archivedLists, shoppingListy.find((list) => list.id === listId)]);
+    } else {
+      setArchivedLists(archivedLists.filter((list) => list.id !== listId));
+    }
   };
 
+  const handleToggleShowArchived = () => {
+    // Přepnout mezi zobrazením a skrytím archivovaných seznamů
+    setShowArchived(!showArchived);
+  };
 
   return (  
     <div className="shopping-list-overview">
       <div>
+      <button onClick={handleToggleShowArchived}>
+          {showArchived ? 'Skrýt archivované' : 'Zobrazit archivované'}
+        </button>
         {/* Tlačítka pro změnu aktuálního uživatele */}
         {authors.map(author => (
           <button key={author} onClick={() => handleAuthorChange(author)}
@@ -61,10 +83,12 @@ const ShoppingListOverview = () => {
       <h1>Všechny nákupní seznamy</h1>
       <CreateListModal onCreateList={handleCreateList} toggleModal={toggleModal} isModalOpen={isModalOpen} user = {currentUser} />
       <ul>
-        {shoppingListy.map((list) => (  
+        {shoppingListy
+        .filter(list => (showArchived ? true : !list.isArchived))
+        .map((list) => (  
           <li key={list.id}>
              
-              <ShoppingListThumbnail list={list} user={currentUser} onDeleteList={handleDeleteList}  />
+              <ShoppingListThumbnail list={list} user={currentUser} onDeleteList={handleDeleteList}  onArchiveList={handleArchiveList}     isArchived={archivedLists.some((archivedList) => archivedList.id === list.id)} />
           </li>
         ))}
       </ul>
