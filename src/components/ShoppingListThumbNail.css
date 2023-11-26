@@ -1,9 +1,8 @@
-/* Add this to your CSS file or style section */
 
 .shopping-list-overview {
     display: flexbox;
-    flex-wrap: wrap; /* Allows items to wrap to the next line if the container is too narrow */
-    justify-content: space-between; /* Distributes items evenly with space between them */
+    flex-wrap: wrap; 
+    justify-content: space-between; 
   }
 
   .shopping-list-overview h1 {
@@ -32,3 +31,9 @@
     margin: 8px 0;
   }
   
+  @media (max-width: 600px) {
+    .shopping-list-thumbnail {
+        width: 100%; /* Přizpůsobit šířku dlaždice pro menší obrazovky */
+        float: none; /* Zrušit zarovnání, aby dlaždice byly pod sebou */
+    }
+}

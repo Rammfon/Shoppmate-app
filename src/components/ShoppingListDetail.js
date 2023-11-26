@@ -11,7 +11,7 @@ const ShoppingListDetail = () => {
   
   const { id } = useParams();
 
-  // State to store shopping list data
+ 
 
   const [shoppingList, setShoppingList] = useState (mockup.find(item => item.id === parseInt(id)));
 
@@ -25,10 +25,10 @@ const ShoppingListDetail = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [addingMember, setAddingMember] = useState(false);
 
-  // Fetch data for the selected shopping list
+  
   useEffect(() => {
     const fetchData = async () => {
-      // Replace this with your actual data fetching logic
+    
       try {
         const response = await fetch(`/shopping-lists/${id}`);
         if (!response.ok) {

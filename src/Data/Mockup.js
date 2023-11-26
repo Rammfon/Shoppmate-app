@@ -37,6 +37,6 @@ const shoppingLists = [
         { id: 12, name: "Položka 3", status: "nevyřešená" },
        
       ],},
-    // ... add more shopping lists
+    
   ];
   export default shoppingLists

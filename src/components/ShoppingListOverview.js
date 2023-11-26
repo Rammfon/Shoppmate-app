@@ -1,4 +1,4 @@
-// ShoppingListOverview.js
+
 
 import React from 'react';
 import { useState } from 'react';
@@ -12,9 +12,9 @@ const ShoppingListOverview = () => {
   const shoppingLists = mockup
   const [shoppingListy, setShoppingLists] = useState(shoppingLists);
   const [showArchived, setShowArchived] = useState(false);
-  const [archivedLists, setArchivedLists] = useState([]); // Nový stav pro ukládání archivovaných seznamů
+  const [archivedLists, setArchivedLists] = useState([]); 
   const handleCreateList = (newList) => {
-    // Zpracujte vytvoření nového seznamu a aktualizujte stav seznamů
+  
     setShoppingLists([...shoppingListy, newList]);
   };
     
@@ -40,11 +40,11 @@ const ShoppingListOverview = () => {
   };
 
   const handleDeleteList = (listId) => {
-    // Filter out the list with the specified ID
+    
     const updatedLists = shoppingListy.filter((list) => list.id !== listId);
-    // Update the state with the new list of shopping lists
+   
     setShoppingLists(updatedLists);
-    setArchivedLists(archivedLists.filter((list) => list.id !== listId)); // Odstranit ze seznamu archivovaných seznamů
+    setArchivedLists(archivedLists.filter((list) => list.id !== listId)); 
   };
   const handleArchiveList = (listId, isArchived) => {
     const updatedLists = shoppingListy.map((list) =>
@@ -52,7 +52,7 @@ const ShoppingListOverview = () => {
     );
     setShoppingLists(updatedLists);
 
-    // Aktualizovat seznam archivovaných seznamů
+   
     if (isArchived) {
       setArchivedLists([...archivedLists, shoppingListy.find((list) => list.id === listId)]);
     } else {
@@ -61,7 +61,7 @@ const ShoppingListOverview = () => {
   };
 
   const handleToggleShowArchived = () => {
-    // Přepnout mezi zobrazením a skrytím archivovaných seznamů
+    
     setShowArchived(!showArchived);
   };
 
@@ -71,7 +71,7 @@ const ShoppingListOverview = () => {
       <button onClick={handleToggleShowArchived}>
           {showArchived ? 'Skrýt archivované' : 'Zobrazit archivované'}
         </button>
-        {/* Tlačítka pro změnu aktuálního uživatele */}
+        
         {authors.map(author => (
           <button key={author} onClick={() => handleAuthorChange(author)}
           style={{ backgroundColor: lastClickedButton === author ? 'lightblue' : 'whitesmoke' }}
@@ -81,14 +81,23 @@ const ShoppingListOverview = () => {
         ))}
       </div>
       <h1>Všechny nákupní seznamy</h1>
-      <CreateListModal onCreateList={handleCreateList} toggleModal={toggleModal} isModalOpen={isModalOpen} user = {currentUser} />
+      <CreateListModal 
+      onCreateList={handleCreateList} 
+      toggleModal={toggleModal} 
+      isModalOpen={isModalOpen} 
+      user = {currentUser} />
       <ul>
         {shoppingListy
         .filter(list => (showArchived ? true : !list.isArchived))
         .map((list) => (  
           <li key={list.id}>
              
-              <ShoppingListThumbnail list={list} user={currentUser} onDeleteList={handleDeleteList}  onArchiveList={handleArchiveList}     isArchived={archivedLists.some((archivedList) => archivedList.id === list.id)} />
+              <ShoppingListThumbnail 
+              list={list} 
+              user={currentUser} 
+              onDeleteList={handleDeleteList}  
+              onArchiveList={handleArchiveList}     
+              isArchived={archivedLists.some((archivedList) => archivedList.id === list.id)} />
           </li>
         ))}
       </ul>

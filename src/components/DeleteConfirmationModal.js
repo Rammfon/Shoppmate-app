@@ -9,7 +9,7 @@ const DeleteConfirmationModal = ({ isOpen, onCancel, onConfirm }) => {
       <div className="modal-content">
         <h2>Opravdu chcete smazat tento seznam?</h2>
         <button onClick={onCancel}>Zrušit</button>
-        <button onClick={onConfirm}>Potvrdit smazání</button>
+        <button onClick={onConfirm}>Smazat</button>
       </div>
     </div>
   );

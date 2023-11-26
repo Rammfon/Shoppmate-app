@@ -1,4 +1,4 @@
-// CreateListModal.js
+
 
 import React, { useState } from "react";
 import "./CreateListModal.css";
@@ -8,13 +8,13 @@ export default function CreateListModal({ onCreateList, toggleModal, isModalOpen
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSaveList = () => {
-        // Ověření, zda uživatel zadal název seznamu
+        
         if (!listName.trim()) {
           setErrorMessage('Nemáte vyplněný název seznamu.');
           return;
         }
     
-    // Vytvořte nový seznam
+    
     const newList = {
       id: Date.now(),
       author: user,
@@ -23,17 +23,17 @@ export default function CreateListModal({ onCreateList, toggleModal, isModalOpen
       items: [],
     };  
 
-    // Zavolejte funkci na vytvoření seznamu, kterou jste předali jako prop
+   
     onCreateList(newList);
 
-    // Zavřete modální okno
+    
     toggleModal();
     setListName('');
     setErrorMessage('')
   };
 
   const handleInputChange = (e) => {
-    // Při změně vstupu skryjte chybovou zprávu
+   
     setErrorMessage('');
     setListName(e.target.value);
   };

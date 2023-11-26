@@ -15,18 +15,18 @@ const ShoppingListThumbnail = ( props ) => {
   };
 
   const handleConfirmDelete = () => {
-    // Volání funkce na smazání seznamu
+    
     props.onDeleteList(props.list.id);
     setModalOpen(false);
     
   };
   useEffect(() => {
-    // Aktualizujte vnitřní stav isArchived při změně prop isArchived
+    
     setIsArchived(props.isArchived);
   }, [props.isArchived]);
 
   const handleArchiveClick = () => {
-    // Volání funkce na aktualizaci stavu seznamu v nadřazené komponentě
+ 
     props.onArchiveList(props.list.id, !props.isArchived);
   };
   return (
