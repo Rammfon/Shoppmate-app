@@ -33,7 +33,7 @@
   
   @media (max-width: 600px) {
     .shopping-list-thumbnail {
-        width: 100%; /* Přizpůsobit šířku dlaždice pro menší obrazovky */
-        float: none; /* Zrušit zarovnání, aby dlaždice byly pod sebou */
+        width: 100%; 
+        float: none; 
     }
 }
