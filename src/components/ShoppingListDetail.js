@@ -6,16 +6,18 @@ import AddMember from "./AddMember";
 import AddItem from "./AddItem";
 import RemoveItem from "./RemoveItem";
 import { useParams } from 'react-router-dom';
-import mockup from '../Data/Mockup';
+
+import LoadingSpinner from './LoadingSpinner';
+import { v4 as uuidv4 } from 'uuid';
+
+import api from './ApiWrapper'; 
+
+
 const ShoppingListDetail = () => {
-  
-  const { id } = useParams();
+  const [data, setData] = useState(null);
+  const { userId, id } = useParams();
+  const [shoppingList, setShoppingList] = useState(null);
 
- 
-
-  const [shoppingList, setShoppingList] = useState (mockup.find(item => item.id === parseInt(id)));
-
-  
   const [viewMode, setViewMode] = useState("vlastník");
   const [isOwner, setIsOwner] = useState(true);
   const [editingName, setEditingName] = useState(false);
@@ -24,85 +26,135 @@ const ShoppingListDetail = () => {
   const [selectedStatus, setSelectedStatus] = useState("vše");
   const [showFilters, setShowFilters] = useState(false);
   const [addingMember, setAddingMember] = useState(false);
+  const [currentName, setCurrentName] = useState(null);
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
 
-  
   useEffect(() => {
-    const fetchData = async () => {
-    
+    const fetchShoppingList = async () => {
       try {
-        const response = await fetch(`/shopping-lists/${id}`);
-        if (!response.ok) {
-          throw new Error(`Server returned ${response.status} ${response.statusText}`);;
-        }
-        const data = await response.json();
-        setShoppingList(data);
+        const list = await api.ShoppingListById(id);
+        setShoppingList(list);
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
+
+        setError(error);
+        setLoading(false);
+        console.error(`Chyba při předávání dat: ${error.message}`);
       }
     };
-
-    fetchData();
+  
+    fetchShoppingList();
   }, [id]);
 
 
+  if (loading) {
+    return <LoadingSpinner />; 
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>; 
+  }
 
 
 
-  const changeName = (newName) => {
-    setShoppingList({ ...shoppingList, name: newName });
-    setEditingName(false);
-  };
+const handleEditClick = () => {
+  setEditingName(true);
+};
 
-  const handleEditClick = () => {
-    setEditingName(true);
-  };
-
-  const handleLeave = () => {
+const changeName = async (newName) => {
+  try {
+    await api.ShoppingListName(shoppingList.id, newName);
     
-    if (shoppingList.members.includes("Vy")) {
-      const updatedMembers = shoppingList.members.filter((m) => m !== "Vy");
+    setShoppingList((prevList) => ({ ...prevList, name: newName }));
+    setCurrentName(newName);
+    setEditingName(false);
+    console.log("Nový název:", newName); 
+  } catch (error) {
+    console.error(`Chyba při změně jména: ${error.message}`);
+  }
+};
+
+
+  
+
+const handleLeave = async () => {
+  try {
+    if (shoppingList.members.some((member) => member.username === "Vy")) {
+      const updatedMembers = shoppingList.members.filter((m) => m.username !== "Vy");
+      await api.updateShoppingListMembers(shoppingList.id, updatedMembers);
       setShoppingList({ ...shoppingList, members: updatedMembers });
     }
-  };
+  } catch (error) {
+    console.error(`Chyba při opouštění nákupního seznamu: ${error.message}`);
+  }
+};
 
-  const handleRemoveMember = (member) => {
-   
-    const updatedMember = shoppingList.members.filter((m) => m !== member);
-
-   
-    setShoppingList({ ...shoppingList, members: updatedMember });
-  };
-
-
-
-  const handleAddMember = (newMemberName) => {
-   
-    const updatedMembers = [...shoppingList.members, newMemberName];
-    setShoppingList({ ...shoppingList, members: updatedMembers });
-    setAddingMember(false);
-  };
-
-  const handleAddItem = (newItemName) => {
-  
-    const newItem = { id: shoppingList.items.length + 1, name: newItemName, status: "nevyřešená" };
-    const updatedItems = [...shoppingList.items, newItem];
-    setShoppingList({ ...shoppingList, items: updatedItems });
-    setAddingItem(false);
-  };
-
-  const handleRemoveItem = (item) => {
-   
-    const updatedItems = shoppingList.items.filter((i) => i !== item);
-    setShoppingList({ ...shoppingList, items: updatedItems });
-  };
-
-  const handleResolveItem = (id) => {
-    if (resolvedItems.includes(id)) {
-      setResolvedItems(resolvedItems.filter((i) => i !== id));
-    } else {
-      setResolvedItems([...resolvedItems, id]);
+  const handleRemoveMember = async (member) => {
+    try {
+      const updatedMembers = shoppingList.members.filter((m) => m !== member);
+      await api.updateShoppingListMembers(shoppingList.id, updatedMembers);
+      setShoppingList({ ...shoppingList, members: updatedMembers });
+    } catch (error) {
+      console.error(`Chyba při odstraňování člena: ${error.message}`);
     }
   };
+  const handleAddMember = async (newMemberName) => {
+    try {
+      const newMemberId = uuidv4(); 
+      const newMember = { id: newMemberId, username: newMemberName, role: 'member' };
+  
+      const updatedMembers = [...shoppingList.members, newMember];
+      await api.updateShoppingListMembers(shoppingList.id, updatedMembers);
+  
+      setShoppingList({ ...shoppingList, members: updatedMembers });
+      setAddingMember(false);
+    } catch (error) {
+      console.error(`Chyba při přidávání nového člena: ${error.message}`);
+    }
+  };
+  
+
+  const handleAddItem = async (newItemName) => {
+    try {
+      const newItemId = uuidv4(); 
+      const newItem = { itemId: newItemId, itemName: newItemName, resolved: false };
+  
+      const updatedItems = [...shoppingList.items, newItem];
+      await api.updateShoppingListItems(shoppingList.id, updatedItems);
+  
+      setShoppingList({ ...shoppingList, items: updatedItems });
+      setAddingItem(false);
+    } catch (error) {
+      console.error(`Chyba při přidávání položky: ${error.message}`);
+    }
+  };
+  
+  const handleRemoveItem = async (itemId) => {
+    try {
+      const updatedItems = shoppingList.items.filter((item) => item.itemId !== itemId);
+      await api.updateShoppingListItems(shoppingList.id, updatedItems);
+  
+      setShoppingList({ ...shoppingList, items: updatedItems });
+    } catch (error) {
+      console.error(`Chyba při odstraňování položky: ${error.message}`);
+    }
+  };
+  const handleResolveItem = async (itemId) => {
+    try {
+      const updatedItems = shoppingList.items.map((item) =>
+        item.itemId === itemId ? { ...item, resolved: !item.resolved } : item
+      );
+  
+      await api.updateShoppingListItems(shoppingList.id, updatedItems);
+  
+      setShoppingList((prevList) => ({ ...prevList, items: updatedItems }));
+    } catch (error) {
+      console.error(`Chyba při změně stavu: ${error.message}`);
+    }
+  };
+  
+  console.log(shoppingList);
 
   return (
     <div className="shoppinglistdetail">
@@ -112,8 +164,8 @@ const ShoppingListDetail = () => {
       </div>
 
       {editingName ? (
-  <EditShoppingListName currentName={shoppingList?.name} onSave={changeName} />
-) : (
+        <EditShoppingListName currentName={shoppingList?.name} onSave={changeName} />
+      ) : (
         <h1>
           {shoppingList?.name}
           {isOwner && viewMode === "vlastník" && !editingName && (
@@ -131,16 +183,12 @@ const ShoppingListDetail = () => {
       <ul className="memberlist">
         {shoppingList?.members.map((member, index) => (
           <li key={index} className="memberitem">
-            {member}
-           
-            {member === "Vy" && <LeaveShoppingList  onLeave={handleLeave} />}
-            {isOwner && member !== "Vy" && viewMode === "vlastník" && (
-             
-          
+            {member.username}
+
+            {member.username === "Vy" && <LeaveShoppingList onLeave={handleLeave} />}
+            {isOwner && member.username !== "Vy" && viewMode === "vlastník" && (
               <RemoveMember member={member} onRemove={handleRemoveMember} />
-             
             )}
-            
           </li>
         ))}
       </ul>
@@ -159,26 +207,24 @@ const ShoppingListDetail = () => {
 
       <h2>Položky seznamu:</h2>
       <ul>
-        {shoppingList?.items
-          .filter((item) => {
-            return (
-              selectedStatus === "vše" ||
-              (selectedStatus === "vyřešená" && resolvedItems.includes(item.id)) ||
-              (selectedStatus === "nevyřešená" && !resolvedItems.includes(item.id))
-            );
-          })
-          .map((item) => (
-            <li key={item.id} style={{ color: resolvedItems.includes(item.id) ? "green" : "black" }}>
-              <span>{item.name} ({resolvedItems.includes(item.id) ? "vyřešeno" : "nevyřešeno"})</span>
-              <input
-                type="checkbox"
-                checked={resolvedItems.includes(item.id)}
-                onChange={() => handleResolveItem(item.id)}
-              />
-              {isOwner && <RemoveItem item={item} onRemoveItem={() => handleRemoveItem(item)} />}
-            </li>
-          ))}
-      </ul>
+  {shoppingList?.items
+    .filter((item) => selectedStatus === "vše" || item.resolved === (selectedStatus === "vyřešená"))
+    .map((item) => (
+      <li key={item.itemId} style={{ color: item.resolved ? "green" : "black" }}>
+        <span>
+          {item.itemName} ({item.resolved ? "vyřešeno" : "nevyřešeno"})
+        </span>
+        <input
+          type="checkbox"
+          checked={item.resolved}
+          onChange={() => handleResolveItem(item.itemId)}
+        />
+        {isOwner && (
+          <RemoveItem itemId={item.itemId} onRemoveItem={() => handleRemoveItem(item.itemId)} />
+        )}
+      </li>
+    ))}
+</ul>
 
       {isOwner && <button className="button" onClick={() => setAddingItem(true)}>Přidat položku</button>}
       {addingItem && isOwner && <AddItem onAddItem={handleAddItem} />}

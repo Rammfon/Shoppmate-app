@@ -1,12 +1,14 @@
 import React from "react";
 
-const RemoveItem = ({ item, onRemoveItem }) => {
+const RemoveItem = ({ itemId, onRemoveItem }) => {
   const handleRemoveClick = () => {
-    onRemoveItem(item);
+    onRemoveItem(itemId);
   };
 
   return (
-    <button className="button" onClick={handleRemoveClick}>Odebrat</button>
+    <button className="button" onClick={handleRemoveClick}>
+      Odebrat
+    </button>
   );
 };
 

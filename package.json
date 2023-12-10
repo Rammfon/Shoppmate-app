@@ -2,14 +2,16 @@
   "name": "shoppmate-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.19.0",
     "react-scripts": "5.0.1",
+    "uuid": "^9.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -25,7 +27,7 @@
     ]
   },
   "browserslist": {
-    "production": [
+    "production": [ 
       ">0.2%",
       "not dead",
       "not op_mini all"
@@ -35,5 +37,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-jsx": "^7.23.3",
+    "@babel/preset-react": "^7.23.3",
+    "@testing-library/react": "^14.1.2",
+    "jest": "^27.5.1" 
+    
+    
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
   }
 }

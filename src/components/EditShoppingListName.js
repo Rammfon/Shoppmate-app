@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const EditShoppingListName = ({ currentName, onSave }) => {
   const [newName, setNewName] = useState(currentName);
+
+ 
+  useEffect(() => {
+    setNewName(currentName);
+  }, [currentName]);
 
   const handleSave = () => {
     onSave(newName);
@@ -19,5 +24,4 @@ const EditShoppingListName = ({ currentName, onSave }) => {
     </div>
   );
 };
-
 export default EditShoppingListName;

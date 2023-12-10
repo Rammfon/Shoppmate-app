@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import ShoppingListDetail from './components/ShoppingListDetail';
 import ShoppingListOverview from './components/ShoppingListOverview';
 import Header from './components/Header';
@@ -12,11 +12,11 @@ function App() {
       <div className="container">
         <Header />
         <div className="content">
-        <Routes>
-        <Route path="/" element={<Navigate to="/homepage" />} />
-  <Route path="/homepage" element={<ShoppingListOverview />} />
-  <Route path= "/shopping-lists/:id" element={<ShoppingListDetail  />} />
-</Routes>
+          <Routes>
+            <Route path="/" element={<Navigate to="/homepage" />} />
+            <Route path="/homepage" element={<ShoppingListOverview />} />
+            <Route path="/shopping-lists/:id" element={<ShoppingListDetail />} />
+          </Routes>
         </div>
         <Footer />
       </div>
